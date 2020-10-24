@@ -2,7 +2,7 @@
     "AWSTemplateFormatVersion": "2010-09-09",
     "Description": "This template create VPC, LB and ASG",
     "Parameters": {
-        "WebServerKeyName" {
+        "WebServerKeyName": {
             "Description": "This key will be used for ssh login into EC2 instances",
             "Type": "AWS::EC2::KeyPair::KeyName"
         },
@@ -37,7 +37,7 @@
                 ]
             }
         },
-        "VPCGatewayAttacment": {
+        "VPCGatewayAttachment": {
             "Type": "AWS::EC2::VPCGatewayAttachment",
             "Properties": {
                 "VpcId": {
@@ -48,7 +48,7 @@
                 }
             }
         },
-        "DMZ1public": {
+        "DMZ1Public": {
             "Type": "AWS::EC2::Subnet",
             "Properties": {
                 "AvailabilityZone": {
@@ -66,17 +66,17 @@
                 "Tags": [ 
                     {
                         "Key": "Name",
-                        "Value": "DMZ1public"
+                        "Value": "DMZ1Public"
                     }
                 ]
             }
         },
-        "DMZ2public": {
+        "DMZ2Public": {
             "Type": "AWS::EC2::Subnet",
             "Properties": {
                 "AvailabilityZone": {
                     "Fn::Select": [
-                        "1",
+                        "0",
                         {
                             "Fn::GetAZs": ""
                         }
@@ -89,107 +89,107 @@
                 "Tags": [ 
                     {
                         "Key": "Name",
-                        "Value": "DMZ2public"
+                        "Value": "DMZ2Public"
                     }
                 ]
-            },
-            "AppLayer1Private": {
-                "Type": "AWS::EC2::Subnet",
-                "Properties": {
-                    "AvailabilityZone": {
-                        "Fn::Select": [
-                            "0",
-                            {
-                                "Fn::GetAZs"
-                            }
-                        ]
-                    },
-                    "CidrBlock": "10.99.11.0/24",
-                    "VpcId": {
-                        "Ref": "VPC"
-                    },
-                    "Tags": [ 
-                        {
-                            "Key": "Name",
-                            "Value": "AppLayer1Private"
-                        }
-                    ]
-                }
-            },
-            "AppLayer2Private": {
-                "Type": "AWS::EC2::Subnet",
-                "Properties": {
-                    "AvailabilityZone": {
-                        "Fn::Select": [
-                            "1",
-                            {
-                                "Fn::GetAZs"
-                            }
-                        ]
-                    },
-                    "CidrBlock": "10.99.12.0/24",
-                    "VpcId": {
-                        "Ref": "VPC"
-                    },
-                    "Tags": [ 
-                        {
-                            "Key": "Name",
-                            "Value": "AppLayer2Private"
-                        }
-                    ]
-                }
-            },
-            "PublicRT": {
-                "Type": "AWS::EC2::RouteTable",
-                "Properties": {
-                    "VpcId": [
-                        {
-                            "Ref": "VPC"
-                        }
-                    ],
-                    "Tags": [
-                        {
-                            "Key": "Name",
-                            "Value": "PublicRT"
-                        }
-                    ]
-                }
-            },
-            "RouteTableAssociationA": {
-                "Type": "AWS::EC2::SubnetRouteTableAssociation",
-                "Properties": {
-                    "SubnetId": {
-                        "Ref": "DMZ1Public"
-                    },
-                    "RouteTableId": {
-                        "Ref": "PublicRT"
-                    }
-                }
-            },
-            "RouteTableAssociationB": {
-                "Type": "AWS::EC2::SubnetRouteTableAssociation",
-                "Properties": {
-                    "SubnetId": {
-                        "Ref": "DMZ2Public"
-                    },
-                    "RouteTableId": {
-                        "Ref": "PublicRT"
-                    }
-                }
-            },
-            "RoutePublic2Internet":{
-                "Type": "AWS::EC2:Route",
-                "Properties": {
-                    "RouteTableId": {
-                        "Ref": "PublicRT"
-                    },
-                    "DestinationCidrBlock": "0.0.0.0/0",
-                    "GatewayId": {
-                        "Ref": "InternetGateway"
-                    }
-                },
-                "DependsOn": "VPCGatewayAttachment"
             }
+        },
+        "AppLayer1Private": {
+            "Type": "AWS::EC2::Subnet",
+            "Properties": {
+                "AvailabilityZone": {
+                    "Fn::Select": [
+                        "0",
+                        {
+                            "Fn::GetAZs": ""
+                        }
+                    ]
+                },
+                "CidrBlock": "10.99.11.0/24",
+                "VpcId": {
+                    "Ref": "VPC"
+                },
+                "Tags": [ 
+                    {
+                        "Key": "Name",
+                        "Value": "AppLayer1Private"
+                    }
+                ]
+            }
+        },
+        "AppLayer2Private": {
+            "Type": "AWS::EC2::Subnet",
+            "Properties": {
+                "AvailabilityZone": {
+                    "Fn::Select": [
+                        "1",
+                        {
+                            "Fn::GetAZs": ""
+                        }
+                    ]
+                },
+                "CidrBlock": "10.99.12.0/24",
+                "VpcId": {
+                    "Ref": "VPC"
+                },
+                "Tags": [ 
+                    {
+                        "Key": "Name",
+                        "Value": "AppLayer2Private"
+                    }
+                ]
+            }
+        },
+        "PublicRT": {
+            "Type": "AWS::EC2::RouteTable",
+            "Properties": {
+                "VpcId": [
+                    {
+                        "Ref": "VPC"
+                    }
+                ],
+                "Tags": [
+                    {
+                        "Key": "Name",
+                        "Value": "PublicRT"
+                    }
+                ]
+            }
+        },
+        "RouteTableAssociationA": {
+            "Type": "AWS::EC2::SubnetRouteTableAssociation",
+            "Properties": {
+                "SubnetId": {
+                    "Ref": "DMZ1Public"
+                },
+                "RouteTableId": {
+                    "Ref": "PublicRT"
+                }
+            }
+        },
+        "RouteTableAssociationB": {
+            "Type": "AWS::EC2::SubnetRouteTableAssociation",
+                "Properties": {
+                "SubnetId": {
+                    "Ref": "DMZ2Public"
+                },
+                "RouteTableId": {
+                    "Ref": "PublicRT"
+                }
+            }
+        },
+        "RoutePublic2Internet":{
+            "Type": "AWS::EC2::Route",
+            "Properties": {
+                "RouteTableId": {
+                    "Ref": "PublicRT"
+                },
+                "DestinationCidrBlock": "0.0.0.0/0",
+                "GatewayId": {
+                    "Ref": "InternetGateway"
+                }
+            },
+            "DependsOn": "VPCGatewayAttachment"
         }
     }
 }
