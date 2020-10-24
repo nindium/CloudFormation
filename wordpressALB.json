@@ -138,6 +138,57 @@
                         }
                     ]
                 }
+            },
+            "PublicRT": {
+                "Type": "AWS::EC2::RouteTable",
+                "Properties": {
+                    "VpcId": [
+                        {
+                            "Ref": "VPC"
+                        }
+                    ],
+                    "Tags": [
+                        {
+                            "Key": "Name",
+                            "Value": "PublicRT"
+                        }
+                    ]
+                }
+            },
+            "RouteTableAssociationA": {
+                "Type": "AWS::EC2::SubnetRouteTableAssociation",
+                "Properties": {
+                    "SubnetId": {
+                        "Ref": "DMZ1Public"
+                    },
+                    "RouteTableId": {
+                        "Ref": "PublicRT"
+                    }
+                }
+            },
+            "RouteTableAssociationB": {
+                "Type": "AWS::EC2::SubnetRouteTableAssociation",
+                "Properties": {
+                    "SubnetId": {
+                        "Ref": "DMZ2Public"
+                    },
+                    "RouteTableId": {
+                        "Ref": "PublicRT"
+                    }
+                }
+            },
+            "RoutePublic2Internet":{
+                "Type": "AWS::EC2:Route",
+                "Properties": {
+                    "RouteTableId": {
+                        "Ref": "PublicRT"
+                    },
+                    "DestinationCidrBlock": "0.0.0.0/0",
+                    "GatewayId": {
+                        "Ref": "InternetGateway"
+                    }
+                },
+                "DependsOn": "VPCGatewayAttachment"
             }
         }
     }
