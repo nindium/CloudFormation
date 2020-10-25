@@ -220,7 +220,7 @@
             "Properties": {
                 "AllocationId": {
                     "Fn::GetAtt": [
-                        "NATElasticIP",
+                        "NATElasticIp",
                         "AllocationId"
                     ]
                 },
@@ -237,7 +237,7 @@
                 },
                 "DestinationCidrBlock": "0.0.0.0/0",
                 "NatGatewayId": {
-                    "Ref": "NATGatway"
+                    "Ref": "NATGateway"
                 }
             }
         },
