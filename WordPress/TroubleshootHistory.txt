@@ -1,0 +1,36 @@
+Purpouse: 
+        This JSON file should be used in CloudFormation 
+        to create secure WEB application with a Bastion Host, 
+        NAT Gateway and Application Load Balancer.
+1. Created first version of ClodFormation configuration, defined all necessary components.
+2. Check template for existing syntax errors:
+    - Load this configuration in the ClodFormation template designer;
+    - Found sytax error and fix it;
+    - Repeat steps above while all errors have been fixed;
+    Main errors that were found at this step: missing curly and square bracket at the end of logical blocks 
+3. Try to create stack.
+    - Load json template as file, start to create stack and see if stack will be created.
+    - In failure case see what part of template prevented from successfull creation
+    and try to find out reason and fix problem.
+    - Repeat steps above to finalizing stack creation.
+    Main logical errors have been found:
+        - Wrong attribute names used (contained errors);
+        - PolicyType in AutoScaling policy block was defined incorrect:
+        "TargetTrackingScaling" should be used.
+4. Stack has been created successfully, but WEB application didn't work properly
+    (It was no wordpress page presented at the LoadBalancer URL).
+    To find out reason I connected to one of the instances via Bastion host.
+    I recognized, that bootstrap script did not make necessary changes into the system:
+    system was not updated, mysql, http, php and wordpress were not be installed.
+    Checked internet connectivity - absented.
+    Try figure out the reason - found out wrong CIDR block in the one of NACL.
+    Fixed error and recreated the stack.
+    Still no wordpress page presented at the LoadBalancer URL.
+    Connected via ssh to Application instance.
+    Figured out that latest version of wordpress does not work with php-5.4.16 installed.
+    Changed version of wordpress in bootstrap script for 5.1.1.
+    Recreate stack.
+5.  Stack successfully created, wordpress start page appeared.
+
+
+
